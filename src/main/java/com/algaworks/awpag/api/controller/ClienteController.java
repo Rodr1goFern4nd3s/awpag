@@ -1,6 +1,8 @@
 package com.algaworks.awpag.api.controller;
 
 import com.algaworks.awpag.domain.model.Cliente;
+import com.algaworks.awpag.domain.repository.ClienteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,20 +15,11 @@ import java.util.List;
 @RequestMapping("/clientes")
 public class ClienteController {
 
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     @GetMapping
     public List<Cliente> listar() {
-        var cliente1 = new Cliente();
-        cliente1.setId(1L);
-        cliente1.setNome("Gilvan da Silva");
-        cliente1.setEmail("gilvan@algaworks.com.br");
-        cliente1.setTelefone("61945246852");
-
-        var cliente2 = new Cliente();
-        cliente2.setId(2L);
-        cliente2.setNome("Emilia Pereira de Oliveira");
-        cliente2.setEmail("emilia@algaworks.com.br");
-        cliente2.setTelefone("61945452389");
-
-        return Arrays.asList(cliente1, cliente2);
+        return clienteRepository.findAll();
     }
 }
