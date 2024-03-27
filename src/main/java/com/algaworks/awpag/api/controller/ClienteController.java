@@ -1,23 +1,27 @@
 package com.algaworks.awpag.api.controller;
 
+import com.algaworks.awpag.domain.exception.NegocioException;
 import com.algaworks.awpag.domain.model.Cliente;
 import com.algaworks.awpag.domain.repository.ClienteRepository;
+import com.algaworks.awpag.domain.service.OperacoesClienteService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final OperacoesClienteService operacoesClienteService;
+
+    private final ClienteRepository clienteRepository;
 
     @GetMapping
     public List<Cliente> listar() {
@@ -37,28 +41,33 @@ public class ClienteController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Cliente adicionar(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
+        return operacoesClienteService.salvar(cliente);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long id, @RequestBody Cliente cliente) {
         if(!clienteRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
         cliente.setId(id);
-        cliente = clienteRepository.save(cliente);
+        cliente = operacoesClienteService.salvar(cliente);
         return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
         if(!clienteRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
-        clienteRepository.deleteById(id);
+        operacoesClienteService.excluir(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<String> capturar(NegocioException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
