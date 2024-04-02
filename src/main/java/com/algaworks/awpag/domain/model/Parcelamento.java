@@ -1,6 +1,11 @@
 package com.algaworks.awpag.domain.model;
 
+import com.algaworks.awpag.domain.validation.ValidationGroups;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,11 +23,25 @@ public class Parcelamento {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Valid
+    @ConvertGroup(from = Default.class, to = ValidationGroups.ClienteId.class)
     @ManyToOne
+    @NotNull
     private Cliente cliente;
 
+    @NotBlank
+    @Size(max = 20)
     private String descricao;
+
+    @NotNull
+    @Positive
     private BigDecimal valorTotal;
+
+    @NotNull
+    @Positive
+    @Max(12)
     private Integer quantidadeParcelas;
+
+
     private LocalDateTime dataCriacao;
 }
