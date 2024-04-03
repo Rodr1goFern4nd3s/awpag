@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "parcelamentos")
@@ -43,5 +44,5 @@ public class Parcelamento {
     private Integer quantidadeParcelas;
 
 
-    private LocalDateTime dataCriacao;
+    private OffsetDateTime dataCriacao;
 }
