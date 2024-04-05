@@ -40,7 +40,7 @@ public class Parcelamento {
 
     @NotNull
     @Positive
-    @Max(12)
+    @Max(value = 12)
     private Integer quantidadeParcelas;
 
 
